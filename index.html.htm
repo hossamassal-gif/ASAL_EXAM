@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>اختبار تدريبي - مدرسة حمزة بن عبد المطلب</title>
+    <style>
+        :root { --burgundy: #800000; --correct: #27ae60; --wrong: #e74c3c; --blue-arrow: #3498db; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #f2f2f2; margin: 0; padding: 20px; display: flex; justify-content: center; }
+        .page-frame { border: 15px solid var(--burgundy); background: white; width: 100%; max-width: 950px; min-height: 96vh; position: relative; padding: 35px; box-sizing: border-box; box-shadow: 0 0 20px rgba(0,0,0,0.2); }
+        .header-section { text-align: center; width: 100%; margin-bottom: 40px; }
+        .school-line { font-size: 26px; font-weight: bold; white-space: nowrap; display: block; color: black; }
+        .dept-line { font-size: 18px; color: #444; margin-top: 5px; display: block; }
+        .screen { display: none; text-align: center; }
+        .active { display: block; }
+        .btn-action { background: var(--burgundy); color: white; padding: 15px 60px; border: none; border-radius: 10px; cursor: pointer; font-size: 24px; margin-top: 20px; transition: 0.3s; }
+        .btn-excel { background: #1f7244; color: white; padding: 10px 30px; border: none; border-radius: 8px; cursor: pointer; font-size: 18px; margin-top: 15px; width: 100%; }
+        .info-group { margin: 20px 0; display: flex; align-items: center; justify-content: center; gap: 15px; flex-direction: column; }
+        .input-box { width: 350px; padding: 12px; font-size: 18px; border: 2px solid #ddd; border-radius: 8px; outline: none; text-align: center; }
+        .error-msg { color: var(--wrong); font-size: 14px; margin-top: 5px; display: none; }
+        #timer-display { font-size: 35px; color: var(--wrong); font-weight: bold; border: 4px solid var(--wrong); width: 75px; height: 75px; line-height: 75px; border-radius: 50%; margin: 0 auto 25px; }
+        .quiz-content { display: flex; gap: 30px; text-align: right; }
+        .question-column { flex: 2; }
+        .sidebar-series { flex: 1; background: #fff; border: 2px solid #ddd; padding: 10px; border-radius: 10px; display: none; min-width: 200px; }
+        .series-label { font-size: 14px; font-weight: bold; color: var(--blue-arrow); margin: 5px 0; text-align: center; }
+        .series-container { display: flex; align-items: center; justify-content: space-between; height: 450px; padding: 5px; border-top: 1px solid #eee; }
+        .metal-names { font-size: 12px; text-align: right; line-height: 1.7; font-weight: bold; }
+        .arrow-box { position: relative; width: 25px; height: 100%; background: linear-gradient(to bottom, var(--blue-arrow), #ddd); clip-path: polygon(50% 0%, 100% 5%, 75% 5%, 75% 95%, 100% 95%, 50% 100%, 0% 95%, 25% 95%, 25% 5%, 0% 5%); }
+        .metal-symbols { font-size: 13px; font-weight: 900; line-height: 1.7; text-align: left; }
+        .wave-diagram { margin: 15px 0; background: #f9f9f9; padding: 10px; border-radius: 8px; border: 1px dashed #ccc; }
+        .q-text { font-size: 22px; color: var(--burgundy); font-weight: bold; margin-bottom: 25px; border-right: 8px solid var(--burgundy); padding-right: 15px; }
+        .choice { background: #fdfdfd; border: 2px solid #ddd; padding: 18px; margin: 12px 0; border-radius: 10px; cursor: pointer; font-size: 19px; transition: 0.2s; color: #333; text-align: right; }
+        .choice:hover { background: #f9f9f9; border-color: var(--burgundy); }
+        .status-msg { font-size: 36px; font-weight: bold; margin: 20px 0; }
+        .pie-chart { width: 200px; height: 200px; border-radius: 50%; border: 5px solid #fff; margin: 20px auto; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .review-section { text-align: right; margin-top: 30px; border-top: 3px solid #eee; padding-top: 20px; max-height: 400px; overflow-y: auto; }
+        .review-item { margin-bottom: 15px; padding: 10px; border-bottom: 1px solid #eee; }
+    </style>
+</head>
+<body>
+
+<div class="page-frame">
+    <div class="header-section">
+        <span class="school-line">مدرسة حمزة بن عبد المطلب الإعدادية للبنين</span>
+        <span class="dept-line">قسم العلوم</span>
+    </div>
+
+    <!-- الصفحة الأولى - الحفاظ على الترتيب والأسطر بدقة -->
+    <div id="screen-start" class="screen active">
+        <h1 style="font-size: 55px; color: var(--burgundy); margin-bottom: 10px;">اختبار تدريبي</h1>
+        <h3 style="margin-bottom: 5px;">منتصف الفصل الدراسي الثاني</h3>
+        <h3 style="margin-top: 0; color: #555;">2025-2026</h3>
+        <p style="font-weight: bold;">إعداد: أ. حسام عسل</p>
+        <button class="btn-action" onclick="showInfoPage()">ابدأ الاختبار</button>
+    </div>
+
+    <div id="screen-info" class="screen">
+        <h2 style="color: var(--burgundy);">بيانات الطالب</h2>
+        <div class="info-group">
+            <input type="text" id="student-name" class="input-box" placeholder="اسم الطالب (كلمتان على الأقل)...">
+            <div id="name-error" class="error-msg">يرجى إدخال اسم ثنائي على الأقل</div>
+            <input type="text" id="student-class" class="input-box" placeholder="رقم الصف (رقمان على الأقل)...">
+            <div id="class-error" class="error-msg">يرجى إدخال رقم الصف (مثل: 91)</div>
+        </div>
+        <button class="btn-action" onclick="validateAndStart()">تأكيد وبدء</button>
+    </div>
+
+    <div id="screen-quiz" class="screen">
+        <div id="timer-display">20</div>
+        <div class="quiz-content">
+            <div class="question-column">
+                <div id="q-label" class="q-text"></div>
+                <div id="extra-viz" class="wave-diagram" style="display:none;">
+                    <svg width="400" height="120" viewBox="0 0 400 120">
+                        <path d="M 0 60 Q 25 10, 50 60 T 100 60 T 150 60 T 200 60 T 250 60 T 300 60" fill="none" stroke="#2980b9" stroke-width="3"/>
+                        <line x1="25" y1="20" x2="125" y2="20" stroke="red" stroke-width="2" stroke-dasharray="4"/>
+                        <text x="70" y="15" fill="red" font-weight="bold">X</text>
+                    </svg>
+                </div>
+                <div id="options-box"></div>
+            </div>
+            <div id="chem-sidebar" class="sidebar-series">
+                <div class="series-label">الأكثر نشاطاً ↑</div>
+                <div class="series-container">
+                    <div class="metal-names">بوتاسيوم<br>صوديوم<br>كالسيوم<br>مغنيسيوم<br>ألومنيوم<br><span style="color:red">كربون</span><br>خارصين<br>حديد<br>قصدير<br>رصاص<br>نحاس<br>فضة<br>ذهب<br>بلاتين</div>
+                    <div class="arrow-box"></div>
+                    <div class="metal-symbols">K<br>Na<br>Ca<br>Mg<br>Al<br><span style="color:red">C</span><br>Zn<br>Fe<br>Sn<br>Pb<br>Cu<br>Ag<br>Au<br>Pt</div>
+                </div>
+                <div class="series-label">الأقل نشاطاً ↓</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="screen-result" class="screen">
+        <div id="result-status" class="status-msg"></div>
+        <div id="student-summary" style="font-size:20px; margin: 10px 0;"></div>
+        <div id="final-score" style="font-size:24px; color:var(--burgundy); font-weight: bold;"></div>
+        <div id="pie-chart" class="pie-chart"></div>
+        <button class="btn-excel" onclick="exportToExcel()">💾 تصدير النتيجة وإرسال للمعلم</button>
+        <button id="retry-btn" class="btn-action" style="width:100%" onclick="retryQuiz()">إعادة الاختبار</button>
+        <div id="review-area" class="review-section"></div>
+    </div>
+</div>
+
+<script>
+// مصفوفة الـ 50 سؤالاً مع توزيع الإجابات (1، 2، 3، 4) دورياً
+const db = [
+    { q: "ما المادة التي يسبب تراكمها تشنجاً عضلياً مجهداً؟", a: "حمض اللاكتيك", opts: ["حمض اللاكتيك", "الإيثانول", "الأكسجين", "السكريات"], s: false, v: false },
+    { q: "ما ناتج التنفس اللاهوائي في فطر الخميرة؟", a: "إيثانول + ثاني أكسيد الكربون", opts: ["حمض لاكتيك", "إيثانول + ثاني أكسيد الكربون", "ماء فقط", "أكسجين"], s: false, v: false },
+    { q: "لماذا يختفي الإيثانول من الخبز بعد خبزه؟", a: "يتبخر أثناء عملية الخبز", opts: ["تمتصه الخميرة", "يتفاعل مع الدقيق", "يتبخر أثناء عملية الخبز", "يتحول لماء"], s: false, v: false },
+    { q: "أي الأغذية يصنع باستخدام بكتيريا تنتج حمض اللاكتيك؟", a: "اللبن الزبادي", opts: ["الخبز", "الكيك", "الزبدة", "اللبن الزبادي"], s: false, v: false },
+    { q: "ما الغاز الذي يسبب انتفاخ العجين عند إضافة الخميرة؟", a: "ثاني أكسيد الكربون", opts: ["ثاني أكسيد الكربون", "الأكسجين", "النيتروجين", "الهيدروجين"], s: false, v: false },
+    { q: "ما المادة التي تحول الحليب إلى زبادي بفعل البكتيريا؟", a: "حمض اللاكتيك", opts: ["الإيثانول", "حمض اللاكتيك", "الماء", "الأكسجين"], s: false, v: false },
+    { q: "ما شرط حدوث التنفس اللاهوائي في الخلايا؟", a: "غياب أو نقص الأكسجين", opts: ["ضوء الشمس", "الحرارة", "غياب أو نقص الأكسجين", "وفرة أكسجين"], s: false, v: false },
+    { q: "ماذا يحدث لـ pH الحليب عند تحوله لزبادي؟", a: "ينخفض ويصبح حامضياً", opts: ["يرتفع", "يبقى ثابتاً", "يصل لـ 9", "ينخفض ويصبح حامضياً"], s: false, v: false },
+    { q: "أي العمليات التالية تنتج طاقة أكبر للخلية؟", a: "التنفس الهوائي", opts: ["التنفس الهوائي", "التنفس اللاهوائي", "التخمر", "كلاهما متساوي"], s: false, v: false },
+    { q: "لماذا يغلى الحليب في بداية صناعة الزبادي؟", a: "لقتل البكتيريا الضارة", opts: ["لتحسين اللون", "لقتل البكتيريا الضارة", "لإذابة السكر", "للتبريد"], s: false, v: false },
+    { q: "ما السكر الذي تتغذى عليه بكتيريا الزبادي؟", a: "اللاكتوز", opts: ["الجلوكوز", "الفركتوز", "اللاكتوز", "النشا"], s: false, v: false },
+    { q: "ما الوظيفة الأساسية للتنفس اللاهوائي في الخميرة؟", a: "إنتاج طاقة في غياب الأكسجين", opts: ["بناء جدار", "امتصاص نيتروجين", "صناعة ضوء", "إنتاج طاقة في غياب الأكسجين"], s: false, v: false },
+    { q: "ما المادة البادئة لعملية التنفس لإنتاج الطاقة؟", a: "الجلوكوز", opts: ["الجلوكوز", "البروتين", "الدهون", "الأملاح"], s: false, v: false },
+    { q: "ما نوع الانقسام المسؤول عن نمو الجسم وتعويض التالف؟", a: "انقسام متساوي", opts: ["منصف", "انقسام متساوي", "تبرعم", "انشطار"], s: false, v: false },
+    { q: "كم عدد الكروموسومات في الزيجوت للإنسان؟", a: "46", opts: ["23", "92", "46", "44"], s: false, v: false },
+    { q: "أي الخلايا تعتبر أحادية المجموعة الكروموسومية (n)؟", a: "حبوب اللقاح", opts: ["الجلد", "الكبد", "الرئة", "حبوب اللقاح"], s: false, v: false },
+    { q: "كم خلية ناتجة عن الانقسام المنصف لخلية واحدة؟", a: "4 خلايا", opts: ["4 خلايا", "خليتان", "6 خلايا", "8 خلايا"], s: false, v: false },
+    { q: "ما طريقة تكاثر البكتيريا لاجنسياً؟", a: "الانشطار الثنائي", opts: ["التبرعم", "الانشطار الثنائي", "الأبواغ", "جنسياً"], s: false, v: false },
+    { q: "أين تقع الكروموسومات في الخلية حقيقية النواة؟", a: "في النواة", opts: ["في السيتوبلازم", "في الغشاء", "في النواة", "في الفجوة"], s: false, v: false },
+    { q: "ماذا تسمى الخلية الناتجة عن عملية الإخصاب؟", a: "الزيجوت", opts: ["المشيج", "الجنين", "الكروموسوم", "الزيجوت"], s: false, v: false },
+    { q: "ما الانقسام المسؤول عن إنتاج الأمشاج؟", a: "انقسام منصف", opts: ["انقسام منصف", "انقسام متساوي", "مباشر", "خضري"], s: false, v: false },
+    { q: "إذا احتوى الحيوان المنوي 14 كروموسوم، فكم في الزيجوت؟", a: "28", opts: ["14", "28", "7", "46"], s: false, v: false },
+    { q: "ما أهم ميزة للتكاثر الجنسي؟", a: "إنتاج تنوع وراثي", opts: ["السرعة", "تنوع وراثي", "تطابق", "سهولة"], s: false, v: false },
+    { q: "ما طريقة تكاثر فطر الخميرة؟", a: "التبرعم", opts: ["انشطار", "أبواغ", "تجدد", "التبرعم"], s: false, v: false },
+    { q: "في أي مرحلة يتضاعف DNA قبل الانقسام؟", a: "المرحلة B", opts: ["المرحلة B", "المرحلة A", "المرحلة C", "المرحلة D"], s: false, v: false },
+    { q: "ما اسم تفاعل لحام قضبان السكك الحديدية؟", a: "الثرميت", opts: ["الإحلال", "الثرميت", "التفكك", "الأكسدة"], s: true, v: false },
+    { q: "ما نواتج تفاعل الثرميت؟", a: "حديد + أكسيد ألومنيوم", opts: ["نحاس", "حديد + أكسيد ألومنيوم", "مغنيسيوم", "صوديوم"], s: true, v: false },
+    { q: "أي الفلزات أقل نشاطاً في السلسلة؟", a: "البلاتين Pt", opts: ["ذهب", "فضة", "البلاتين Pt", "رصاص"], s: true, v: false },
+    { q: "أي الفلزات أكثر نشاطاً كيميائياً؟", a: "البوتاسيوم K", opts: ["البوتاسيوم K", "صوديوم", "حديد", "نحاس"], s: true, v: false },
+    { q: "أين يقع الكربون (C) في السلسلة؟", a: "بين Al و Zn", opts: ["فوق K", "بين Al و Zn", "تحت Au", "تحت Cu"], s: true, v: false },
+    { q: "ما طريقة استخلاص فلزات تقع فوق الكربون؟", a: "التحليل الكهربائي", opts: ["التسخين مع الكربون", "ماء", "التحليل الكهربائي", "توجد حرة"], s: true, v: false },
+    { q: "أي فلز يستخلص بالتسخين مع الكربون؟", a: "الحديد", opts: ["ألومنيوم", "مغنيسيوم", "صوديوم", "الحديد"], s: true, v: false },
+    { q: "ما نوع التفاعل عند وضع خارصين في كبريتات نحاس؟", a: "إحلال بسيط", opts: ["إحلال بسيط", "تفكك", "اتحاد", "احتراق"], s: true, v: false },
+    { q: "ما هي السبيكة؟", a: "خليط فلز مع عناصر أخرى", opts: ["فلز نقي", "خليط فلز مع عناصر أخرى", "مركب", "أكسيد"], s: false, v: false },
+    { q: "لماذا الفولاذ المقاوم للصدأ صلب جداً؟", a: "بسبب اختلاف أحجام الذرات", opts: ["خفيف", "رخيص", "بسبب اختلاف أحجام الذرات", "نقي"], s: false, v: false },
+    { q: "ما شرط حدوث صدأ الحديد؟", a: "ماء والأكسجين معاً", opts: ["ماء فقط", "أكسجين فقط", "نيتروجين", "ماء والأكسجين معاً"], s: false, v: false },
+    { q: "ما الاسم العلمي لصدأ الحديد؟", a: "أكسيد حديد (III) مائي", opts: ["أكسيد حديد (III) مائي", "كبريتات", "كلوريد", "نترات"], s: false, v: false },
+    { q: "ما وظيفة الزيت في تجربة صدأ الحديد؟", a: "منع دخول الأكسجين", opts: ["تبريد", "منع دخول الأكسجين", "تسريع", "حفظ"], s: false, v: false },
+    { q: "ما طريقة حماية السفن بربطها بكتل خارصين؟", a: "الحاجز المضحي", opts: ["الدهان", "التغليف", "الحاجز المضحي", "التشحيم"], s: true, v: false },
+    { q: "في الرسم المرفق، ماذا يمثل الرمز (X) للموجة؟", a: "الطول الموجي", opts: ["سعة", "تردد", "قاع", "الطول الموجي"], s: false, v: true },
+    { q: "ما الذي تنقله الموجة في اتجاه انتشارها؟", a: "الطاقة فقط", opts: ["الطاقة فقط", "المادة", "طاقة ومادة", "جزيئات"], s: false, v: false },
+    { q: "ما نوع موجة الماء السطحية؟", a: "مستعرضة", opts: ["طولية", "مستعرضة", "صوتية", "راديو"], s: false, v: false },
+    { q: "أي جزء في الأذن يحول الصوت لرسائل عصبية؟", a: "القوقعة", opts: ["الطبلة", "الركاب", "القوقعة", "السندان"], s: false, v: false },
+    { q: "ما مدى ترددات سمع الإنسان الطبيعي؟", a: "20 - 20,000 Hz", opts: ["2-20", "200-2000", "50k", "20 - 20,000 Hz"], s: false, v: false },
+    { q: "ما الخاصية التي تميز الصوت الحاد من الغليظ؟", a: "التردد", opts: ["التردد", "السعة", "الوسط", "السرعة"], s: false, v: false },
+    { q: "ما الموجة الكهرومغناطيسية ذات أكبر طاقة؟", a: "أشعة جاما", opts: ["راديو", "أشعة جاما", "ضوء", "ميكروويف"], s: false, v: false },
+    { q: "ماذا يسمى تكرار الصوت بسبب الانعكاس؟", a: "الصدى", opts: ["انكسار", "امتصاص", "الصدى", "الرنين"], s: false, v: false },
+    { q: "أي الأشعة تصور العظام (السينية)؟", a: "الأشعة السينية", opts: ["راديو", "تحت حمراء", "جاما", "الأشعة السينية"], s: false, v: false },
+    { q: "لماذا لا يسمع رواد الفضاء في الفراغ؟", a: "لعدم وجود وسط مادي", opts: ["لعدم وجود وسط مادي", "مسافة", "برودة", "تبخر"], s: false, v: false },
+    { q: "أي الموجات الكهرومغناطيسية لها أكبر طول موجي؟", a: "موجات الراديو", opts: ["جاما", "سينية", "راديو", "ضوء مرئي"], s: false, v: false }
+];
+
+let idx = 0, score = 0, timer, logs = [], attempts = 0;
+
+function showInfoPage() { document.getElementById('screen-start').classList.remove('active'); document.getElementById('screen-info').classList.add('active'); }
+
+function validateAndStart() {
+    const name = document.getElementById('student-name').value.trim();
+    const cls = document.getElementById('student-class').value.trim();
+    if (name.split(/\s+/).length < 2) { document.getElementById('name-error').style.display = 'block'; return; }
+    if ((cls.match(/\d/g) || []).length < 2) { document.getElementById('class-error').style.display = 'block'; return; }
+    attempts++; document.getElementById('screen-info').classList.remove('active'); document.getElementById('screen-quiz').classList.add('active');
+    idx = 0; score = 0; logs = []; nextQ();
+}
+
+function nextQ() {
+    if (idx >= db.length) { finish(); return; }
+    clearInterval(timer); let s = 20; document.getElementById('timer-display').innerText = s;
+    timer = setInterval(() => { s--; document.getElementById('timer-display').innerText = s; if (s <= 0) select(null); }, 1000);
+    const item = db[idx]; document.getElementById('q-label').innerText = `سؤال ${idx + 1}: ${item.q}`;
+    document.getElementById('chem-sidebar').style.display = item.s ? 'block' : 'none';
+    document.getElementById('extra-viz').style.display = item.v ? 'block' : 'none';
+    const box = document.getElementById('options-box'); box.innerHTML = '';
+    item.opts.forEach(o => { const d = document.createElement('div'); d.className = 'choice'; d.innerText = o; d.onclick = () => select(o); box.appendChild(d); });
+}
+
+function select(o) { logs.push(o); if (o === db[idx].a) score++; idx++; nextQ(); }
+
+function finish() {
+    clearInterval(timer); document.getElementById('screen-quiz').classList.remove('active'); document.getElementById('screen-result').classList.add('active');
+    const pct = (score / db.length) * 100;
+    const status = document.getElementById('result-status');
+    status.innerText = pct >= 50 ? "تهانينا إنك ناجح 😊 💪" : "حاول مرة أخرى إنك راسب 😢";
+    status.style.color = pct >= 50 ? "var(--correct)" : "var(--wrong)";
+    document.getElementById('student-summary').innerText = `الاسم: ${document.getElementById('student-name').value} | الصف: ${document.getElementById('student-class').value} | محاولة ${attempts}`;
+    document.getElementById('final-score').innerText = `النتيجة: ${score} من ${db.length} (${pct.toFixed(1)}%)`;
+    document.getElementById('pie-chart').style.background = `conic-gradient(var(--correct) 0deg ${(score/db.length)*360}deg, var(--wrong) ${(score/db.length)*360}deg 360deg)`;
+    const rev = document.getElementById('review-area'); rev.innerHTML = '<h3>مراجعة الأخطاء:</h3>';
+    db.forEach((q, i) => { if (logs[i] !== q.a) {
+        const d = document.createElement('div'); d.className = 'review-item';
+        d.innerHTML = `<strong>س${i+1}: ${q.q}</strong><br>إجابتك: <span style="color:var(--wrong)">${logs[i] || 'لم تحل'}</span> | الصواب: <span style="color:var(--correct)">${q.a}</span>`;
+        rev.appendChild(d);
+    }});
+    if (attempts >= 3) document.getElementById('retry-btn').style.display = 'none';
+}
+
+function exportToExcel() {
+    const name = document.getElementById('student-name').value;
+    const cls = document.getElementById('student-class').value;
+    const myEmail = "h.asal1612@education.qa"; 
+    let csv = "\ufeffالاسم,الصف,المحاولة,الدرجة,النسبة\n";
+    csv += `${name},'${cls},${attempts},${score}/${db.length},${((score/db.length)*100).toFixed(1)}%\n`;
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.download = `نتيجة_${name}.csv`; link.click();
+    const subject = encodeURIComponent(`نتيجة الطالب: ${name}`);
+    const body = encodeURIComponent(`الأستاذ حسام عسل،\nتم الانتهاء من الاختبار التدريبي.\nالاسم: ${name}\nالصف: ${cls}\nالنتيجة: ${score}/${db.length}\n(يرجى إرفاق ملف الإكسل المحمل الآن)`);
+    window.location.href = `mailto:${myEmail}?subject=${subject}&body=${body}`;
+}
+
+function retryQuiz() { if (attempts < 3) { document.getElementById('screen-result').classList.remove('active'); validateAndStart(); } }
+</script>
+
+</body>
+</html>
